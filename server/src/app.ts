@@ -10,27 +10,19 @@ connectDB();
 
 const app: Application = express();
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  process.env.CLIENT_URL || '',
-].filter(Boolean);
-
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // allow all during dev/testing
-    }
-  },
-  credentials: true,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (_req: Request, res: Response) => {
+  res.json({ success: true, message: 'Smart Leads API' });
+});
 
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ success: true, message: 'Server is running' });
